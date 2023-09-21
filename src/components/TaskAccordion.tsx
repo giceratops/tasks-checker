@@ -28,7 +28,7 @@ import {
 import React from "react";
 import { FaCheck, FaFire, FaSlash } from 'react-icons/fa';
 import { api } from "~/utils/api";
-import { TaskPeriod, type Task } from "~/utils/tasks";
+import { type Task, type TaskPeriod } from "~/utils/tasks";
 
 export type TaskAccordionProps = {
     tasks: Task[]

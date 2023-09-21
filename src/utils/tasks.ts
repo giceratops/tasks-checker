@@ -19,8 +19,8 @@ export type Task = {
 }
 
 export type TaskPeriod = {
-    start: string
-    end: string
+    start: Date
+    end: Date
     time: number
 }
 

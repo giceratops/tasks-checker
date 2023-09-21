@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  app:
+    container_name: tasks-checker
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000

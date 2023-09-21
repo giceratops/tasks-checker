@@ -13,8 +13,12 @@ datasource db {
 model Example {
     id        Int      @id @default(autoincrement())
     name      String
+    month     String
+    key       String
+    value     Float
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@unique([name, month, key])
     @@index([name])
 }

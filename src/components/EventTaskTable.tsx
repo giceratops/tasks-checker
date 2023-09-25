@@ -96,7 +96,7 @@ export const EventTaskTable = ({ tasks }: EventTaskTableProps) => {
                 endAccessor="end"
                 step={60}
                 timeslots={1}
-                views={["week"]}
+                views={["week", "month"]}
                 defaultView="week"
                 style={{ height: 'calc(100vh - 50px)' }}
                 scrollToTime={startDate}
@@ -104,13 +104,13 @@ export const EventTaskTable = ({ tasks }: EventTaskTableProps) => {
                 dayLayoutAlgorithm={(params) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
                     return overlap({ ...params, minimumStartDifference: 15 })
-                  }}
+                }}
             />
         </>
     )
 }
 
-const eventStyleGetter = (event: Event & { type?: string }, start: Date, end: Date, isSelected: boolean) => {
+const eventStyleGetter = (event: Event & { type?: string }, _start: Date, _end: Date, _isSelected: boolean) => {
     let backgroundColor = 'blue';
     switch (event.type) {
         case 'to':

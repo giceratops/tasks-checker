@@ -1,6 +1,7 @@
 import { Flex } from '@chakra-ui/react';
 import Head from 'next/head';
 import type { ReactNode } from 'react';
+import { TaskProvider } from '~/providers/TaskProvider';
 import { Footer } from './Footer';
 import { Navbar } from './Navbar';
 
@@ -11,6 +12,7 @@ export type LayoutProps = {
 export const Layout = (props: LayoutProps) => {
   
   return (<>
+  <TaskProvider>
       <Head>
         <title>Tasks Checker</title>
         <meta name="description" content="Tasks checker" />
@@ -24,5 +26,6 @@ export const Layout = (props: LayoutProps) => {
         </Flex>
         <Footer />
       </Flex>
+  </TaskProvider>
   </>)
 }

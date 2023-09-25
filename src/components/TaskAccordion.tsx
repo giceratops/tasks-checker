@@ -48,32 +48,33 @@ export const TaskAccordion = ({ tasks }: TaskAccordionProps) => {
         return accumulator;
     }, {});
 
-    return (<Card>
-        <CardHeader>
-            <Grid templateColumns='repeat(10, 1fr)' gap={3}>
-                <GridItem>Maand</GridItem>
-                <GridItem>Weekdagen</GridItem>
-                <GridItem>Feestdagen</GridItem>
-                <GridItem>Verlof</GridItem>
-                <GridItem>Werkdagen</GridItem>
-                <GridItem>Te presteren</GridItem>
-                <GridItem>Gepresteerd</GridItem>
-                <GridItem>Overuren</GridItem>
-                <GridItem>Loonbrief</GridItem>
-                <GridItem></GridItem>
-            </Grid>
-        </CardHeader>
-        <CardBody p={0}>
-            <Accordion allowToggle>
-                {
-                    Object.entries(grouped).map(([key, value]) => {
-                        const split = key.split(',');
-                        return <TaskAccordionEntry key={key} date={new Date(parseInt(split[0] ?? "0"), parseInt(split[1] ?? "0"))} tasks={value.tasks} />
-                    })
-                }
-            </Accordion>
-        </CardBody>
-    </Card>
+    return (
+        <Card variant="outline">
+            <CardHeader bgColor="whiteAlpha.200">
+                <Grid templateColumns='repeat(10, 1fr)' gap={3}>
+                    <GridItem>Maand</GridItem>
+                    <GridItem>Weekdagen</GridItem>
+                    <GridItem>Feestdagen</GridItem>
+                    <GridItem>Verlof</GridItem>
+                    <GridItem>Werkdagen</GridItem>
+                    <GridItem>Te presteren</GridItem>
+                    <GridItem>Gepresteerd</GridItem>
+                    <GridItem>Overuren</GridItem>
+                    <GridItem>Loonbrief</GridItem>
+                    <GridItem></GridItem>
+                </Grid>
+            </CardHeader>
+            <CardBody p={0}>
+                <Accordion allowToggle>
+                    {
+                        Object.entries(grouped).map(([key, value]) => {
+                            const split = key.split(',');
+                            return <TaskAccordionEntry key={key} date={new Date(parseInt(split[0] ?? "0"), parseInt(split[1] ?? "0"))} tasks={value.tasks} />
+                        })
+                    }
+                </Accordion>
+            </CardBody>
+        </Card>
     );
 }
 

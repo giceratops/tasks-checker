@@ -30,7 +30,7 @@ export const loadTasks = (workbook: Workbook): Task[] => {
     sheet?.eachRow((row: Row) => {
         if (row.number > 1) {
             let idx = 1;
-            tasks.push({
+            const task = {
                 id: row.getCell(idx++).value as string,
                 name: row.getCell(idx++).value as string,
                 date: new Date(row.getCell(idx++).value as string),
@@ -39,32 +39,54 @@ export const loadTasks = (workbook: Workbook): Task[] => {
                 projectDescription: row.getCell(idx++).value as string,
                 comment: row.getCell(idx++).value as string,
                 to: {
-                    start: row.getCell(idx++).value as string,
-                    end: row.getCell(idx++).value as string,
+                    start: row.getCell(idx++).value as Date,
+                    end: row.getCell(idx++).value as Date,
                     time: row.getCell(idx++).value as number,
                 },
                 period01: {
-                    start: row.getCell(idx++).value as string,
-                    end: row.getCell(idx++).value as string,
+                    start: row.getCell(idx++).value as Date,
+                    end: row.getCell(idx++).value as Date,
                     time: row.getCell(idx++).value as number,
                 },
                 period02: {
-                    start: row.getCell(idx++).value as string,
-                    end: row.getCell(idx++).value as string,
+                    start: row.getCell(idx++).value as Date,
+                    end: row.getCell(idx++).value as Date,
                     time: row.getCell(idx++).value as number,
                 },
                 from: {
-                    start: row.getCell(idx++).value as string,
-                    end: row.getCell(idx++).value as string,
+                    start: row.getCell(idx++).value as Date,
+                    end: row.getCell(idx++).value as Date,
                     time: row.getCell(idx++).value as number,
                 },
                 overtime: row.getCell(idx++).value as boolean,
                 driver: row.getCell(idx++).value as boolean,
                 km_to: row.getCell(idx++).value as number,
                 km_from: row.getCell(idx++).value as number,
-            })
+            }
+
+            copyDateTime(task.date, task.to.start);
+            copyDateTime(task.date, task.to.end);
+            copyDateTime(task.date, task.period01.start);
+            copyDateTime(task.date, task.period01.end);
+            copyDateTime(task.date, task.period02.start);
+            copyDateTime(task.date, task.period02.end);
+            copyDateTime(task.date, task.from.start);
+            copyDateTime(task.date, task.from.end);
+            
+            tasks.push(task)
         }
     })
 
     return tasks;
+}
+
+const copyDateTime = (from: Date, to: Date) => {
+    if (!from) return;
+    if (!to) return;
+
+    to.setHours(to.getHours() - 1)
+    to.setFullYear(from.getFullYear());
+    to.setMonth(from.getMonth());
+    to.setDate(from.getDate());
+    return to;
 }

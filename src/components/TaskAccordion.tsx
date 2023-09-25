@@ -1,6 +1,7 @@
 import {
     Accordion,
     AccordionButton,
+    AccordionIcon,
     AccordionItem,
     AccordionPanel,
     Card,
@@ -25,8 +26,9 @@ import {
     Thead,
     Tr
 } from "@chakra-ui/react";
+import moment from "moment";
 import React from "react";
-import { FaCheck, FaFire, FaSlash } from 'react-icons/fa';
+import { MdCheckCircleOutline, MdOutlineErrorOutline, MdOutlineWarningAmber } from 'react-icons/md';
 import { api } from "~/utils/api";
 import { type Task, type TaskPeriod } from "~/utils/tasks";
 
@@ -58,7 +60,7 @@ export const TaskAccordion = ({ tasks }: TaskAccordionProps) => {
                 <GridItem>Gepresteerd</GridItem>
                 <GridItem>Overuren</GridItem>
                 <GridItem>Loonbrief</GridItem>
-                <GridItem>Status</GridItem>
+                <GridItem></GridItem>
             </Grid>
         </CardHeader>
         <CardBody p={0}>
@@ -97,7 +99,7 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
         key: 'loon',
     })
     React.useEffect(() => {
-        if (!isLoadingLoon) { setLoon(''+dataLoon ?? '0') }
+        if (!isLoadingLoon) { setLoon('' + dataLoon ?? '0') }
     }, [dataLoon, isLoadingLoon])
 
     const weekDays = countWeekdays(date)
@@ -113,7 +115,7 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
     const overTime = timeTotal - timeToWork
     const [loon, setLoon] = React.useState('0');
     const diff = Math.abs(overTime - Number(loon))
-    
+
     const updateRestDays = (value: number) => {
         mutateMonth.mutate({
             name: tasks[0]?.name ?? '',
@@ -166,26 +168,27 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
                         </NumberInput>
                     </GridItem>
                     <GridItem>
-                        { (diff >= 0.0 && diff < 0.3) && Number(loon) > 0 && 
+                        {(diff >= 0.0 && diff < 0.3) && Number(loon) > 0 &&
                             <Tag mr={2} colorScheme="green">
-                                <TagLeftIcon boxSize='12px' as={FaCheck} />
-                                <TagLabel>{ (Number(loon) - overTime).toFixed(2) }</TagLabel>
+                                <TagLeftIcon boxSize='12px' as={MdCheckCircleOutline} />
+                                <TagLabel>{(Number(loon) - overTime).toFixed(2)}</TagLabel>
                             </Tag>
                         }
-                        { (diff >= 0.3 && diff < 1.5) && Number(loon) > 0 && 
+                        {(diff >= 0.3 && diff < 1.5) && Number(loon) > 0 &&
                             <Tag mr={2} colorScheme="orange">
-                                <TagLeftIcon boxSize='12px' as={FaFire} />
-                                <TagLabel>{ (Number(loon) - overTime).toFixed(2) }</TagLabel>
+                                <TagLeftIcon boxSize='12px' as={MdOutlineWarningAmber} />
+                                <TagLabel>{(Number(loon) - overTime).toFixed(2)}</TagLabel>
                             </Tag>
                         }
-                        { (diff >= 1.5) && Number(loon) > 0 && 
+                        {(diff >= 1.5) && Number(loon) > 0 &&
                             <Tag mr={2} colorScheme="red">
-                                <TagLeftIcon boxSize='12px' as={FaSlash} />
-                                <TagLabel>{ (Number(loon) - overTime).toFixed(2) }</TagLabel>
+                                <TagLeftIcon boxSize='12px' as={MdOutlineErrorOutline} />
+                                <TagLabel>{(Number(loon) - overTime).toFixed(2)}</TagLabel>
                             </Tag>
                         }
                     </GridItem>
                 </Grid>
+                <AccordionIcon />
             </AccordionButton>
             <AccordionPanel p={0}>
                 <TableContainer m={0}>
@@ -194,11 +197,11 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
                             <Tr>
                                 <Th>Datum</Th>
                                 <Th>Project</Th>
-                                <Th>Comment</Th>
-                                <Th>Tijd heen</Th>
-                                <Th>Tijd periode 1</Th>
-                                <Th>Tijd periode 2</Th>
-                                <Th>Tijd terug</Th>
+                                <Th>Commentaar</Th>
+                                <Th>Heen</Th>
+                                <Th>Periode 1</Th>
+                                <Th>Periode 2</Th>
+                                <Th>Terug</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -208,9 +211,10 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
                                     const hours = Math.floor(totalTime);
                                     const minutes = (totalTime - hours) * 60;
 
-                                    return (<>
-                                        <Tr>
+                                    return (
+                                        <Tr key={task.id}>
                                             <Td>
+                                                {getDay(task.date)} <br />
                                                 {task.date.toLocaleDateString()} <br />
                                                 <Text fontSize='xs'>{hours}h{minutes > 0 ? minutes : ''}</Text>
                                             </Td>
@@ -224,7 +228,7 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
                                             <Td>{timePeriod(task.period02)}</Td>
                                             <Td>{timePeriod(task.from)}</Td>
                                         </Tr>
-                                    </>)
+                                    )
                                 })
                             }
                         </Tbody>
@@ -277,11 +281,24 @@ const timePeriod = (period: TaskPeriod) => {
     const minutes = (period.time - hours) * 60;
 
     return (<>
-        {period.start?.toLocaleTimeString('nl-be', { hour: 'numeric', minute: 'numeric' })}
+        {(moment(period.start)).format('HH:mm')}
         &nbsp;-&nbsp;
-        {period.end?.toLocaleTimeString('nl-be', { hour: 'numeric', minute: 'numeric' })} <br />
+        {(moment(period.end)).format('HH:mm')}
         <Text fontSize='xs'>{hours}h{minutes > 0 ? minutes : ''}</Text>
     </>)
+}
+
+const getDay = (date: Date): string => {
+    switch (date.getDay()) {
+        case 0: return 'Zondag';
+        case 1: return 'Maandag';
+        case 2: return 'Dinsdag';
+        case 3: return 'Woensdag';
+        case 4: return 'Donderdag';
+        case 5: return 'Vrijdag';
+        case 6: return 'Zaterdag';
+        default: return ''
+    }
 }
 
 const HOLIDAYS = [

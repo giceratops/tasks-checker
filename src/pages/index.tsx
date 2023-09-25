@@ -2,6 +2,7 @@ import { Box, Container, Flex, FormLabel, Input, Select } from "@chakra-ui/react
 import * as Excel from 'exceljs';
 import React from "react";
 import { Dropzone } from "~/components/Dropzone";
+import { EventTaskTable } from "~/components/EventTaskTable";
 import { TaskAccordion } from "~/components/TaskAccordion";
 import { loadTasks, type Task } from "~/utils/tasks";
 
@@ -33,7 +34,7 @@ export default function Home() {
         <Input type="file" onChange={(e) => parseExcel(e)} display="none" />
         <Dropzone />
       </FormLabel>
-
+      
       {tasks.length > 0 &&
         <>
           <Flex direction="row" flex="1" alignItems="center">
@@ -51,6 +52,10 @@ export default function Home() {
           </Flex>
 
           <TaskAccordion tasks={tasks.filter((task) => task.date.getFullYear() === year)} />
+
+          <Box py={5}>
+            <EventTaskTable tasks={tasks} />
+          </Box>
         </>
       }
     </Container>

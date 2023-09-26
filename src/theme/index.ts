@@ -5,8 +5,12 @@ import '@fontsource/poppins/400.css';
 
 const proTheme = extendTheme(_proTheme)
 const extenstion = {
+  config: {
+    initialColorMode: 'dark',
+    useSystemColorMode: true,
+  },
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  colors: { ...proTheme.colors, ...theme.colors, brand: proTheme.colors.white },
+  colors: { ...proTheme.colors, ...theme.colors, brand: '#ff000' },
   fonts : {
     heading: 'Poppins',
     body: 'Poppins'

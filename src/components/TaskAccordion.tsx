@@ -8,6 +8,7 @@ import {
     CardBody,
     CardHeader,
     Grid, GridItem,
+    Icon,
     NumberDecrementStepper,
     NumberIncrementStepper,
     NumberInput,
@@ -15,20 +16,18 @@ import {
     NumberInputStepper,
     Table,
     TableContainer,
-    Tag,
-    TagLabel,
-    TagLeftIcon,
     Tbody,
     Td,
     Text,
     Tfoot,
     Th,
     Thead,
-    Tr
+    Tr,
+    Wrap
 } from "@chakra-ui/react";
 import moment from "moment";
 import React from "react";
-import { MdCheckCircleOutline, MdOutlineErrorOutline, MdOutlineWarningAmber } from 'react-icons/md';
+import { BsFileEarmarkCheck, BsFileEarmarkMinus, BsFileEarmarkPlus } from "react-icons/bs";
 import { api } from "~/utils/api";
 import { type Task, type TaskPeriod } from "~/utils/tasks";
 
@@ -156,8 +155,8 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
                         </NumberInput>
                     </GridItem>
                     <GridItem>{workDays}</GridItem>
-                    <GridItem>{timeToWork.toFixed(2)}</GridItem>
-                    <GridItem>{timeTotal}</GridItem>
+                    <GridItem>{decimalToTime(timeToWork)}</GridItem>
+                    <GridItem>{decimalToTime(timeTotal)}</GridItem>
                     <GridItem>{overTime.toFixed(2)}</GridItem>
                     <GridItem>
                         <NumberInput step={0.1} precision={2} onChange={(value) => updateLoon(value)} value={loon}>
@@ -169,7 +168,22 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
                         </NumberInput>
                     </GridItem>
                     <GridItem>
-                        {(diff >= 0.0 && diff < 0.3) && Number(loon) > 0 &&
+                        {
+                            Number(loon) > 0 &&
+                            (
+                                diff >= 0.1 ?
+                                    <Wrap justifyItems="center" color={(overTime - Number(loon)) > 0.0 ? 'red.300' : 'green.300'}>
+                                        <Icon boxSize={5} as={(overTime - Number(loon)) > 0.0 ? BsFileEarmarkMinus : BsFileEarmarkPlus} 
+                                        ></Icon>
+                                        <Text> {decimalToTime(Math.abs(Number(loon) - overTime))}
+                                        </Text>
+                                    </Wrap>
+                                    :
+                                    <Text><Icon boxSize={5} as={BsFileEarmarkCheck}></Icon></Text>
+                            )
+                        }
+
+                        {/* {(diff >= 0.0 && diff < 0.3) && Number(loon) > 0 &&
                             <Tag mr={2} colorScheme="green">
                                 <TagLeftIcon boxSize='12px' as={MdCheckCircleOutline} />
                                 <TagLabel>{(Number(loon) - overTime).toFixed(2)}</TagLabel>
@@ -186,7 +200,7 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
                                 <TagLeftIcon boxSize='12px' as={MdOutlineErrorOutline} />
                                 <TagLabel>{(Number(loon) - overTime).toFixed(2)}</TagLabel>
                             </Tag>
-                        }
+                        } */}
                     </GridItem>
                 </Grid>
                 <AccordionIcon />
@@ -208,16 +222,12 @@ export const TaskAccordionEntry = ({ date, tasks }: TaskAccordionEntryProps) => 
                         <Tbody>
                             {
                                 tasks.sort((a, b) => b.date.getTime() - a.date.getTime()).map((task) => {
-                                    const totalTime = task.to.time + task.period01.time + task.period02.time + task.from.time;
-                                    const hours = Math.floor(totalTime);
-                                    const minutes = (totalTime - hours) * 60;
-
                                     return (
                                         <Tr key={task.id}>
                                             <Td>
                                                 {getDay(task.date)} <br />
                                                 {task.date.toLocaleDateString()} <br />
-                                                <Text fontSize='xs'>{hours}h{minutes > 0 ? minutes : ''}</Text>
+                                                <Text fontSize='xs'>{decimalToTime(task.to.time + task.period01.time + task.period02.time + task.from.time)}</Text>
                                             </Td>
                                             <Td>{task.project} <br />
                                                 {task.company} <br />
@@ -278,14 +288,11 @@ const countHolidays = (start: Date) => {
 const timePeriod = (period: TaskPeriod) => {
     if (!period.time) return;
 
-    const hours = Math.floor(period.time);
-    const minutes = (period.time - hours) * 60;
-
     return (<>
         {(moment(period.start)).format('HH:mm')}
         &nbsp;-&nbsp;
         {(moment(period.end)).format('HH:mm')}
-        <Text fontSize='xs'>{hours}h{minutes > 0 ? minutes : ''}</Text>
+        <Text fontSize='xs'>{decimalToTime(period.time)}</Text>
     </>)
 }
 
@@ -300,6 +307,12 @@ const getDay = (date: Date): string => {
         case 6: return 'Zaterdag';
         default: return ''
     }
+}
+
+const decimalToTime = (time:number): string => {
+    const hours = Math.floor(time);
+    const minutes = Math.round((time - hours) * 60);
+    return `${hours}u${minutes > 0 ? minutes : ''}`
 }
 
 const HOLIDAYS = [

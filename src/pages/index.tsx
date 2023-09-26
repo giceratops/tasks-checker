@@ -1,6 +1,6 @@
 import { Box, Container, Flex, Select } from "@chakra-ui/react";
 import React, { useContext } from "react";
-import { EventTaskTable } from "~/components/EventTaskTable";
+import { EventTaskTable } from "~/components/calendar/EventTaskTable";
 import { TaskAccordion } from "~/components/TaskAccordion";
 import { TaskContext } from "~/providers/TaskProvider";
 
@@ -27,9 +27,9 @@ export default function Home() {
 
           <TaskAccordion tasks={tasks.filter((task) => task.date.getFullYear() === year)} />
 
-          <Box py={5}>
-            <EventTaskTable tasks={tasks} />
-          </Box>
+          <Box height={5}></Box>
+          
+          <EventTaskTable tasks={tasks} />
         </>
       }
     </Container>

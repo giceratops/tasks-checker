@@ -1,5 +1,5 @@
 import {
-    Box, Input, Table, TableContainer, Tag, Tbody, Td, Th, Thead, Tr
+    Input, Table, TableContainer, Tag, Tbody, Td, Th, Thead, Tr
 } from "@chakra-ui/react";
 import React from "react";
 import { type Task } from "~/utils/tasks";
@@ -21,8 +21,6 @@ export const TaskTable = ({ tasks }: TaskTableProps) => {
     }, {});
 
     return (<>
-        <Box py="5">{tasks[0]?.name}</Box>
-
         <TableContainer>
             <Table size='md' variant="striped">
                 <Thead>
